@@ -6,4 +6,5 @@ app = Flask(__name__, template_folder="urninha", static_folder="static")
 def inicio():
     return render_template("urnaelec.html")
 
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5500)
