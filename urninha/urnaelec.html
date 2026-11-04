@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Urna Eletrônica</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename="urnaelec.js") }}">
+</head>
+<style>
+            html, body {
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 15px;
+            font-family: Arial, sans-serif;
+
+        }
+</style>
+<body>
+
+    <h2>SIMULADOR DE URNA ELETRÔNICA</h2>
+
+    <p>Digite o número:</p>
+
+    <input type="text" id="numero">
+
+    <br><br>
+
+    <button onclick="votar()">CONFIRMAR</button>
+    <button onclick="corrigir()">CORRIGIR</button>
+    <button onclick="branco()">BRANCO</button>
+
+    <h2 id="resultado"></h2>
+
+    <img id="foto" width="200">
+
+    <p style="color: white;">
+    13
+    22
+    77
+    18
+    111
+    90
+    67
+    42
+    47
+
+    </p>
+
+    <script src="{{url_for('static', filename="urnaelec.js")}}"></script>
+
+</body>
+</html>
