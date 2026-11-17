@@ -1,57 +1,421 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Urna Eletrônica</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename="urnaelec.js") }}">
-</head>
-<style>
-            html, body {
-            margin: 0;
+    <style>
+        :root {
+            color-scheme: dark;
+            --ink: #f1f3f2;
+            --muted: #a0aaa5;
+            --green: #39866b;
+            --green-dark: #202a26;
+            --mint: #1b2420;
+            --paper: #151a18;
+            --yellow: #c9ad63;
+            --coral: #d96750;
+            --line: #303a35;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            gap: 15px;
-            font-family: Arial, sans-serif;
-
+            min-height: 100vh;
+            margin: 0;
+            padding: 48px 20px;
+            display: grid;
+            place-items: center;
+            color: var(--ink);
+            background-color: #101412;
+            background-image: linear-gradient(rgba(8, 12, 10, 0.78), rgba(8, 12, 10, 0.88)), url("https://upload.wikimedia.org/wikipedia/commons/6/62/Urna_eletr%C3%B4nica_brasileira_UE2020.jpg");
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
         }
-</style>
+
+        .urna {
+            width: min(100%, 900px);
+            overflow: hidden;
+            border: 1px solid #303a35;
+            border-radius: 6px;
+            background: var(--paper);
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+            animation: arrive 480ms ease-out both;
+        }
+
+        .masthead {
+            min-height: 96px;
+            padding: 22px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            color: white;
+            background: var(--green-dark);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            color: var(--green-dark);
+            background: var(--yellow);
+            font-family: Georgia, serif;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .eyebrow, .section-label {
+            margin: 0;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .eyebrow {
+            color: #aab8b0;
+        }
+
+        h1, h2, p {
+            margin-top: 0;
+        }
+
+        h1 {
+            margin-bottom: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 23px;
+            font-weight: 500;
+        }
+
+        .mode {
+            padding: 8px 11px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 5px;
+            color: #f8e6a3;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            white-space: nowrap;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 0.92fr;
+        }
+
+        .voting, .result-panel {
+            min-width: 0;
+            padding: 34px;
+        }
+
+        .voting {
+            border-right: 1px solid var(--line);
+        }
+
+        .section-label {
+            margin-bottom: 15px;
+            color: var(--green);
+        }
+
+        .voting h2, .result-panel h2 {
+            margin-bottom: 9px;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 25px;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        .hint {
+            margin-bottom: 25px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        #numero {
+            width: 100%;
+            height: 66px;
+            padding: 10px 16px;
+            border: 1px solid #46534c;
+            border-radius: 6px;
+            outline: none;
+            color: var(--ink);
+            background: #101512;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 32px;
+            letter-spacing: 5px;
+            transition: border-color 160ms ease, box-shadow 160ms ease;
+        }
+
+        #numero:focus {
+            border-color: #63a98b;
+            box-shadow: 0 0 0 3px rgba(57, 134, 107, 0.2);
+        }
+
+        .actions {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        button {
+            min-height: 43px;
+            padding: 0 15px;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 140ms ease, background-color 140ms ease, border-color 140ms ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        button:focus-visible {
+            outline: 3px solid rgba(99, 169, 139, 0.45);
+            outline-offset: 2px;
+        }
+
+        .confirm {
+            color: white;
+            background: var(--green);
+        }
+
+        .confirm:hover {
+            background: var(--green-dark);
+        }
+
+        .correct {
+            border-color: var(--line);
+            color: var(--ink);
+            background: #222a26;
+        }
+
+        .blank {
+            border-color: #625638;
+            color: #e3cd8e;
+            background: #29251b;
+        }
+
+        .result-panel {
+            background: var(--mint);
+        }
+
+        .result-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            flex: 0 0 auto;
+            margin-top: 7px;
+            border-radius: 50%;
+            background: var(--yellow);
+            box-shadow: 0 0 0 4px rgba(240, 198, 78, 0.2);
+        }
+
+        .result-message {
+            min-height: 44px;
+            margin: 0 0 18px;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .portrait {
+            position: relative;
+            min-height: 230px;
+            overflow: hidden;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(23, 104, 79, 0.14);
+            border-radius: 7px;
+            background-color: #111714;
+            background-image: linear-gradient(rgba(11, 16, 13, 0.48), rgba(11, 16, 13, 0.68)), url("https://upload.wikimedia.org/wikipedia/commons/6/62/Urna_eletr%C3%B4nica_brasileira_UE2020.jpg");
+            background-position: center;
+            background-size: cover;
+        }
+
+        .portrait-placeholder {
+            position: absolute;
+            display: grid;
+            gap: 7px;
+            justify-items: center;
+            color: #c0cbc4;
+            text-align: center;
+        }
+
+        .portrait-placeholder strong {
+            color: #f1f3f2;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .portrait-placeholder span {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+        }
+
+        #foto {
+            position: relative;
+            z-index: 1;
+            display: none;
+            width: 100%;
+            height: 230px;
+            object-fit: contain;
+        }
+
+        .portrait.has-photo #foto {
+            display: block;
+        }
+
+        .portrait.has-photo .portrait-placeholder {
+            display: none;
+        }
+
+        .footnote {
+            margin: 18px 0 0;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        @keyframes arrive {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 680px) {
+            body {
+                padding: 18px 12px;
+                place-items: start center;
+            }
+
+            .masthead {
+                min-height: 82px;
+                padding: 18px;
+            }
+
+            .brand-mark {
+                width: 38px;
+                height: 38px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .mode {
+                padding: 7px;
+                font-size: 9px;
+            }
+
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .voting, .result-panel {
+                padding: 25px 20px;
+            }
+
+            .voting {
+                border-right: 0;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .portrait, #foto {
+                min-height: 190px;
+                height: 190px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
 <body>
+    <main class="urna">
+        <header class="masthead">
+            <div class="brand">
+                <div class="brand-mark" aria-hidden="true">UE</div>
+                <div>
+                    <p class="eyebrow">Simulador cívico</p>
+                    <h1>Urna eletrônica</h1>
+                </div>
+            </div>
+            <span class="mode">MODO DEMONSTRAÇÃO</span>
+        </header>
 
-    <h2>SIMULADOR DE URNA ELETRÔNICA</h2>
+        <div class="workspace">
+            <section class="voting" aria-labelledby="voting-title">
+                <p class="section-label">01 / Votação</p>
+                <h2 id="voting-title">Digite o número do candidato</h2>
+                <p class="hint">Confira o número antes de confirmar seu voto.</p>
 
-    <p>Digite o número:</p>
+                <label for="numero">Número</label>
+                <input type="text" id="numero" inputmode="numeric" autocomplete="off" maxlength="4" aria-label="Número do candidato">
 
-    <input type="text" id="numero">
+                <div class="actions">
+                    <button class="confirm" type="button" onclick="votar()">Confirmar voto</button>
+                    <button class="correct" type="button" onclick="corrigir()">Corrigir</button>
+                    <button class="blank" type="button" onclick="branco()">Voto em branco</button>
+                </div>
+            </section>
 
-    <br><br>
+            <section class="result-panel" aria-labelledby="result-title">
+                <div class="result-heading">
+                    <div>
+                        <p class="section-label">02 / Conferência</p>
+                        <h2 id="result-title">Resultado</h2>
+                    </div>
+                    <span class="status-dot" aria-hidden="true"></span>
+                </div>
+                <p id="resultado" class="result-message" aria-live="polite">Aguardando confirmação do voto.</p>
+                <div class="portrait" id="retrato">
+                    <div class="portrait-placeholder">
+                        <span>IMAGEM DO CANDIDATO</span>
+                        <strong>Aguardando voto</strong>
+                    </div>
+                    <img id="foto" alt="Imagem do candidato">
+                </div>
+                <p class="footnote">Simulação para fins educativos.</p>
+            </section>
+        </div>
+    </main>
 
-    <button onclick="votar()">CONFIRMAR</button>
-    <button onclick="corrigir()">CORRIGIR</button>
-    <button onclick="branco()">BRANCO</button>
-
-    <h2 id="resultado"></h2>
-
-    <img id="foto" width="200">
-
-    <p style="color: white;">
-    13
-    22
-    77
-    18
-    111
-    90
-    67
-    42
-    47
-
-    </p>
-
-    <script src="{{url_for('static', filename="urnaelec.js")}}"></script>
-
+    <script src="{{ url_for('static', filename='urnaelec.js') }}"></script>
 </body>
 </html>

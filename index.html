@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#111412">
+    <meta name="description" content="Simulador de urna eletrônica para fins educativos.">
+    <title>Urna eletrônica | Simulador</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --text: #f0f1ef;
+            --muted: #a4aaa6;
+            --surface: #181b19;
+            --surface-raised: #202421;
+            --line: #383e3a;
+            --green: #34775b;
+            --green-hover: #3e8968;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 32px 18px;
+            display: grid;
+            place-items: center;
+            color: var(--text);
+            background: #111412 linear-gradient(rgba(8, 11, 9, 0.78), rgba(8, 11, 9, 0.88)), url("https://upload.wikimedia.org/wikipedia/commons/6/62/Urna_eletr%C3%B4nica_brasileira_UE2020.jpg") center / cover fixed;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+        }
+
+        .urna {
+            width: min(100%, 900px);
+            overflow: hidden;
+            border: 1px solid #444a46;
+            background: var(--surface);
+            box-shadow: 0 18px 56px rgba(0, 0, 0, 0.42);
+        }
+
+        .masthead {
+            min-height: 76px;
+            padding: 18px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            background: #111412;
+            border-bottom: 1px solid var(--line);
+        }
+
+        h1, h2, p {
+            margin-top: 0;
+        }
+
+        h1 {
+            margin-bottom: 0;
+            font-size: 21px;
+            font-weight: 600;
+        }
+
+        .mode {
+            color: #c3c9c4;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+        }
+
+        .voting, .result-panel {
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .voting {
+            border-right: 1px solid var(--line);
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            font-size: 19px;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .hint {
+            margin-bottom: 24px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        #numero {
+            width: 100%;
+            height: 64px;
+            padding: 10px 15px;
+            border: 1px solid #555d57;
+            border-radius: 2px;
+            outline: none;
+            color: var(--text);
+            background: #101311;
+            font: 30px/1 "Segoe UI", Tahoma, sans-serif;
+            letter-spacing: 5px;
+        }
+
+        #numero:focus {
+            border-color: #78aa8f;
+            box-shadow: 0 0 0 2px rgba(120, 170, 143, 0.2);
+        }
+
+        .actions {
+            margin-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        button {
+            min-height: 42px;
+            padding: 0 13px;
+            border: 1px solid #505752;
+            border-radius: 2px;
+            color: var(--text);
+            background: var(--surface-raised);
+            font: 600 13px "Segoe UI", Tahoma, sans-serif;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2a302c;
+        }
+
+        button:focus-visible {
+            outline: 2px solid #a2c2ad;
+            outline-offset: 2px;
+        }
+
+        .confirm {
+            border-color: var(--green);
+            background: var(--green);
+        }
+
+        .confirm:hover {
+            background: var(--green-hover);
+        }
+
+        .result-panel {
+            background: #1c201d;
+        }
+
+        .result-message {
+            min-height: 42px;
+            margin-bottom: 16px;
+            color: #d3d8d4;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .portrait {
+            position: relative;
+            min-height: 230px;
+            overflow: hidden;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--line);
+            background: #111412 linear-gradient(rgba(8, 11, 9, 0.62), rgba(8, 11, 9, 0.72)), url("https://upload.wikimedia.org/wikipedia/commons/6/62/Urna_eletr%C3%B4nica_brasileira_UE2020.jpg") center / cover;
+        }
+
+        .portrait-placeholder {
+            position: absolute;
+            color: #c5cbc6;
+            font-size: 14px;
+        }
+
+        #foto {
+            position: relative;
+            z-index: 1;
+            display: none;
+            width: 100%;
+            height: 230px;
+            object-fit: contain;
+        }
+
+        .portrait.has-photo #foto {
+            display: block;
+        }
+
+        .portrait.has-photo .portrait-placeholder {
+            display: none;
+        }
+
+        .footnote {
+            margin: 14px 0 0;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        @media (max-width: 680px) {
+            body {
+                padding: 14px 10px;
+                place-items: start center;
+            }
+
+            .masthead {
+                min-height: 66px;
+                padding: 16px 18px;
+            }
+
+            h1 {
+                font-size: 19px;
+            }
+
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .voting, .result-panel {
+                padding: 23px 18px;
+            }
+
+            .voting {
+                border-right: 0;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .portrait, #foto {
+                min-height: 190px;
+                height: 190px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="urna">
+        <header class="masthead">
+            <h1>Urna eletrônica</h1>
+            <span class="mode">SIMULAÇÃO</span>
+        </header>
+
+        <div class="workspace">
+            <section class="voting" aria-labelledby="voting-title">
+                <h2 id="voting-title">Digite o número do candidato</h2>
+                <p class="hint">Confira o número e confirme seu voto.</p>
+
+                <label for="numero">Número</label>
+                <input type="text" id="numero" inputmode="numeric" autocomplete="off" maxlength="4" aria-label="Número do candidato">
+
+                <div class="actions">
+                    <button class="confirm" type="button" onclick="votar()">Confirmar voto</button>
+                    <button type="button" onclick="corrigir()">Corrigir</button>
+                    <button type="button" onclick="branco()">Voto em branco</button>
+                </div>
+            </section>
+
+            <section class="result-panel" aria-labelledby="result-title">
+                <h2 id="result-title">Resultado</h2>
+                <p id="resultado" class="result-message" aria-live="polite">Aguardando confirmação do voto.</p>
+                <div class="portrait" id="retrato">
+                    <span class="portrait-placeholder">Aguardando voto</span>
+                    <img id="foto" alt="Imagem do candidato">
+                </div>
+                <p class="footnote">Simulação para fins educativos.</p>
+            </section>
+        </div>
+    </main>
+
+    <script src="static/urnaelec.js"></script>
+</body>
+</html>

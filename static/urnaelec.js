@@ -1,13 +1,20 @@
+const caminhoSons = "urna%20eletronics/";
+
 function votar() {
 
     let numero = document.getElementById("numero").value;
     let resultado = document.getElementById("resultado");
+    let foto = document.getElementById("foto");
+    let retrato = document.getElementById("retrato");
 
-    let som = new Audio("urna.mp3");
-    let som2 = new Audio("che.mp3")
-    let som3 = new Audio("brainrot.mp3")
-    let som4 = new Audio("china.mp3")
+    foto.removeAttribute("src");
 
+    let som = new Audio(`${caminhoSons}urna.mp3`);
+    let som2 = new Audio(`${caminhoSons}che.mp3`)
+    let som3 = new Audio(`${caminhoSons}brainrot.mp3`)
+    let som4 = new Audio(`${caminhoSons}china.mp3`)
+
+// lista de candidatos padrão Amanda
     if (numero == "13") {
         resultado.innerHTML = "Voto registrado: Lula";
         foto.src = "https://media1.tenor.com/m/0a09KUNuY6oAAAAC/lula-lula-presidente.gif";
@@ -55,20 +62,62 @@ function votar() {
         foto.src = "https://media1.tenor.com/m/QmCzmXP_tssAAAAd/donald-trump-mad.gif";
         som4.play();
 
+// Lista de candidatos extra Luis
+    } else if (numero == "1984") {
+        resultado.innerHTML = "Voto registrado: Freddy Fazbear";
+        foto.src = "https://media1.tenor.com/m/q6_coxgIG2sAAAAC/daym.gif";
+        som.play();
 
+    } else if (numero == "11") {
+        resultado.innerHTML = "Voto registrado: Pink Pie";
+        foto.src = "https://media1.tenor.com/m/GVk5mAsHp8cAAAAC/mlp-pinkie-pie.gif";
+        som.play();
+
+    } else if (numero == "2024") {
+        resultado.innerHTML = "Voto registrado: Herobrine";
+        foto.src = "https://media.tenor.com/eKD4UTHXTCUAAAAi/herobrine-minecraft.gif";
+        som.play();
+
+    } else if (numero == "69") {
+        resultado.innerHTML = "Voto registrado: Jenny";
+        foto.src = "https://media1.tenor.com/m/gFiu3d1O59EAAAAC/funny-jokes.gif";
+        som.play();
+
+    } else if (numero == "2006") {
+        resultado.innerHTML = "Voto registrado: Joker";
+        foto.src = "https://media1.tenor.com/m/lS0wCFg-SfkAAAAd/shuake-akeshu.gif";
+        som.play();
+
+    } else if (numero == "2000") {
+        resultado.innerHTML = "Voto registrado: Mogeko";
+        foto.src = "https://media1.tenor.com/m/YDNGYImRUFIAAAAC/moge-ko-mogeko.gif";
+        som.play();
+
+    } else if (numero == "2018") {
+        resultado.innerHTML = "Voto registrado: Haru Urara";
+        foto.src = "https://media1.tenor.com/m/FCT9oPcObbgAAAAC/uma-musume-uma.gif";
+        som.play();
+
+// Voto nulo
     } else {
         resultado.innerHTML = "Voto nulo";
     }
+
+    retrato.classList.toggle("has-photo", Boolean(foto.getAttribute("src")));
 }
 
 
 function corrigir() {
     document.getElementById("numero").value = "";
     document.getElementById("resultado").innerHTML = "";
+    document.getElementById("foto").removeAttribute("src");
+    document.getElementById("retrato").classList.remove("has-photo");
 }
 
 
 function branco() {
     document.getElementById("resultado").innerHTML = "Voto em branco";
-    new Audio("urna.mp3").play();
+    document.getElementById("foto").removeAttribute("src");
+    document.getElementById("retrato").classList.remove("has-photo");
+    new Audio(`${caminhoSons}urna.mp3`).play();
 }
